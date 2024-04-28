@@ -1,22 +1,28 @@
 from flask import Flask, jsonify
 import random
-from datetime import datetime
 
 app = Flask(__name__)
 
 # Маршрут для генерации случайных данных
-@app.route('/random_data')
-def random_data():
-    # Генерация случайной температуры (от -10 до 40 градусов)
-    temperature = round(random.uniform(-10, 40), 1)
+@app.route('/random_problem')
+def random_problem():
+
+    numbers_count = random.randint(2, 10)
+    problem = [str(random.randint(0, 20)) for num in range(numbers_count)]
+    operators = ['+', '-', '*', "/"]
+
+    for i in range(1, len(problem)*2 - 1, 2):
+        problem.insert(i, random.choice(operators))
+    problem = "".join(problem)
     
-    # Генерация случайной даты (текущая дата и время)
-    date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    
-    # Формирование JSON ответа
+    answer = eval(problem)
+
+    id = random.randint(0, 100)
+
     data = {
-        'temperature': temperature,
-        'date': date
+        "id": id,
+        "problem": problem,
+        "answer" : answer, 
     }
     
     return jsonify(data)
