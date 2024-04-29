@@ -6,7 +6,6 @@ app = Flask(__name__)
 # Маршрут для генерации случайных данных
 @app.route('/random_problem')
 def random_problem():
-
     numbers_count = random.randint(2, 10)
     problem = [str(random.randint(0, 20)) for num in range(numbers_count)]
     operators = ['+', '-', '*', "/"]
