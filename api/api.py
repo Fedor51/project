@@ -1,30 +1,60 @@
 from flask import Flask, jsonify
-import random
+from api.services.generate import *
 
 app = Flask(__name__)
 
-# Маршрут для генерации случайных данных
-@app.route('/random_problem')
-def random_problem():
-    numbers_count = random.randint(2, 10)
-    problem = [str(random.randint(0, 20)) for num in range(numbers_count)]
-    operators = ['+', '-', '*', "/"]
 
-    for i in range(1, len(problem)*2 - 1, 2):
-        problem.insert(i, random.choice(operators))
-    problem = "".join(problem)
+def generate_problem(complexity: bool):
+    # complexity is False(easy) or True(middle)
+    if complexity:
+        return math_gen_complexity_easy()
+    else:
+        return math_gen_complexity_middle(eq=False)
+
+def generate_equation():
+    return math_gen_complexity_middle(eq=True)
+
+
+
+def get_problem(complexity: bool):
     
-    answer = eval(problem)
+    problem = generate_problem(complexity)
+    answer = solve_problem(problem)
+    return problem, answer 
 
-    id = random.randint(0, 100)
+def get_equation():
 
-    data = {
-        "id": id,
-        "problem": problem,
-        "answer" : answer, 
-    }
+    equation = generate_equation()
+    root = solve_eq(equation)
+    return equation, root
+
+@app.route("/send/<query>", methods=["GET"])
+def index(query: list):
+    # query[0] is 0(problem), 1(equation)
+    # query[1] is problem complexity False or True (None if query[0] is 1)
     
-    return jsonify(data)
+    if not query[0]:
+        problem, answer = get_problem(query[1])
+        data = {
+            "origin": problem, 
+            "answer": answer
+        }
+    else:
+        equation, root = get_equation() 
+    
+        data = {
+            "origin": equation,
+            "answer": root
+        }
+    return data 
+
+    # data = {
+    #     "id": id,
+    #     "origin": problem,
+    #     "answer" : answer, 
+    # }
+    
+    # return jsonify(data)
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
