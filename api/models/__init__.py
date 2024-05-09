@@ -1,2 +1,2 @@
 from .user import User
-from .score import Score
+from .test import Test

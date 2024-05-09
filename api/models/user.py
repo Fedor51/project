@@ -5,10 +5,11 @@ class User(db.Model):
     name = db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=False)
     phone = db.Column(db.String, nullable=False)
-    score_id = db.Column(db.Integer, db.ForeignKey('score.id'), nullable=False)
-    
-    def __init__(self, name, email, phone, score_id) -> None:
+    password = db.Column(db.String, nullable=False)
+    tests = db.relationship("Test", back_populates="users")
+
+    def __init__(self, name, email, phone, password) -> None:
         self.name = name
         self.email = email
         self.phone = phone
-        self.score_id = score_id
+        self.password = password 

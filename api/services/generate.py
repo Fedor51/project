@@ -84,14 +84,3 @@ def math_gen_equation0():
             return f'{a} / x = {b}', round(a/b, 2)
         else:
             return  f'x / {a} = {b}', round(a * b, 2)
-
-## Solving 
-
-def solve_eq(equasion: str):
-    x = None
-    return x
-
-def solve_problem(problem: str):
-    answer = eval(problem)
-    return answer 
-
