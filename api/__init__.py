@@ -29,25 +29,31 @@ def get_equation():
     equation, root = generate_equation()
     return equation, root
 
-@app.route("/get_problem/<query>", methods=["GET"])
-def get(query: list):
+@app.route("/get_problem/<int:complexity>", methods=["GET"])
+def get_problem(complexity):
     # query[0] is 0(problem), 1(equation)
     # query[1] is problem complexity: 0 or 1 (None if query[0] is 1)
     
-    if not query[0]:
-        problem, answer = get_problem(query[1])
-        data = {
-            "origin": problem, 
-            "answer": answer
-        }
-    else:
-        equation, root = get_equation() 
+    # if not query[0]:
+    #     problem, answer = get_problem(query[1])
+    #     data = {
+    #         "origin": problem, 
+    #         "answer": answer
+    #     }
+    # else:
+    #     equation, root = get_equation() 
        
-        data = {
-            "origin": equation,
-            "answer": root
-        }
-    return jsonify(data) 
+    #     data = {
+    #         "origin": equation,
+    #         "answer": root
+    #     }
+    # return jsonify(data) 
+    resp = get(complexity)
+    data = {
+        "problem": resp[0],
+        "answer": resp[1]
+    }
+    return jsonify(data)
 
 @app.route("/get/user/<int:id>", methods=["GET"])
 def get_user(id):
@@ -159,3 +165,4 @@ def drop_test(id):
 # Реализация функции для обработки результата, она должна будет округлить и привести float в int если возможно, 
 # Пример: answer = 3.(3) -> 3.3 ; 
 # answer = 16.0(float) -> 16(int)
+# 0**0 = 1  python logic!!!

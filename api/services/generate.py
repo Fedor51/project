@@ -1,6 +1,4 @@
 from random import randint, choice
-
-
 ## Generating 
 operators = ['+', '-', '*', '/'] 
 
@@ -12,12 +10,10 @@ def math_gen_complexity0(operators=operators):
     answer = round(eval(problem), 2)
     return problem, answer
 
-
-
 def math_gen_complexity1(limit: int = 10, operators=operators):
     while True:
         numbers_count = randint(4, limit)
-        problem = [str(randint(0, 10)) for num in range(numbers_count)]
+        problem = [str(randint(1, 10)) for num in range(numbers_count)]
 
         for i in range(1, len(problem)*2 - 1, 2):
             problem.insert(i, choice(operators))
@@ -84,3 +80,50 @@ def math_gen_equation0():
             return f'{a} / x = {b}', round(a/b, 2)
         else:
             return  f'x / {a} = {b}', round(a * b, 2)
+
+# quadratic_equation
+def generate_quadratic_equation():
+    while True:
+        a = randint(1, 10)
+        b = randint(-20, 20)
+        c = randint(-20, 20)
+        s1, s2, s3 = choice(["", "-"]), choice(["+", "-"]), choice(["+", "-"])
+        equation = f"{s1}{abs(a) if a != 1 else ''}x^2 {s2} {abs(b)}x {s3} {abs(c)} = 0"
+        D = (b**2) - (4*a*c)
+        if D < 0:
+            continue
+        elif D == 0:
+            answer = round((-b) / (2*a), 2)
+        else:
+            x1: float = (-b + (D**0.5)) / (2*a)
+            x2: float = (-b - (D**0.5)) / (2*a)
+            i = x1.as_integer_ratio()[0]
+            j = x2.as_integer_ratio()[0]
+            if i > 1e3 or i < 1e-3:
+                continue
+            if j > 1e3 or j < 1e-3:
+                continue
+            answer = [x1, x2]
+        if a == 1:
+            # equation = equation[]
+            pass
+        return equation, answer 
+
+
+
+def get(complexity: int):
+    # complexity is 0(easy), 1(middle) or 2(hard). 
+    
+    # easy
+    if not complexity:  
+        problem, answer = math_gen_complexity0()
+        return problem, answer
+    # middle
+    elif complexity == 1:
+        f = choice([math_gen_complexity1, math_gen_complexity2, math_gen_complexity2_1, math_gen_equation0])
+        return f()
+    # hard
+    else: 
+        problem, answer = generate_quadratic_equation()
+        return problem, answer
+    
