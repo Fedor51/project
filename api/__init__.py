@@ -1,33 +1,13 @@
 from flask import Flask, jsonify, request
 from config import Config
-from api.services.generate import *
 from api.models import *
 from api.models.db import db
+from api.services import *
 
 app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
 
-
-def generate_problem(complexity: int):
-    # complexity is False(easy) or True(middle)
-    if complexity:
-        return math_gen_complexity0()
-    else:
-        return math_gen_complexity2()
-
-def generate_equation():
-    return math_gen_equation0()
-
-def get_problem(complexity: int):
-    
-    problem, answer = generate_problem(complexity)
-    return problem, answer 
-
-def get_equation():
-
-    equation, root = generate_equation()
-    return equation, root
 
 @app.route("/get_problem/<int:complexity>", methods=["GET"])
 def get_problem(complexity):
