@@ -1,4 +1,11 @@
 from random import randint, choice
+
+# refactoring answer
+def ref(x: float|int):
+    if x.is_integer():
+        return int(x)
+    return round(x, 2)
+
 ## Generating 
 operators = ['+', '-', '*', '/'] 
 
@@ -7,7 +14,7 @@ def math_gen_complexity0(operators=operators):
     b = randint(1, 10)
     operator = choice(operators)
     problem = f"{a} {operator} {b}"
-    answer = round(eval(problem), 2)
+    answer = ref(eval(problem))
     return problem, answer
 
 def math_gen_complexity1(limit: int = 10, operators=operators):
@@ -19,7 +26,7 @@ def math_gen_complexity1(limit: int = 10, operators=operators):
             problem.insert(i, choice(operators))
         problem = " ".join(problem)
 
-        try: answer = round(eval(problem), 2)
+        try: answer = ref(eval(problem))
         except ZeroDivisionError: continue
         if answer > 200 or answer < -200:
             continue
@@ -30,7 +37,7 @@ def math_gen_complexity2():
     a = randint(1, 5)
     b = randint(1, 5)
     problem = f'{a}{operator}{b}'
-    answer = eval(problem)
+    answer = ref(eval(problem))
     return problem, answer
 
 def math_gen_complexity2_1(operators=['+', '-', '*', '/', '**']): 
@@ -70,30 +77,31 @@ def math_gen_equation0():
     if operator == '*':
         a = randint(1, 10)
         b = randint(10, 30)
-        return f'{a}x = {b}', round(b/a, 2)
+        return f'{a}x = {b}', ref(b/a)
     
     if operator == '/':
         a = randint(20, 50)
         b = randint(1, 12)
         equation = choice(["a / x = b","x / a = b"])
         if equation == "a / x = b":
-            return f'{a} / x = {b}', round(a/b, 2)
+            return f'{a} / x = {b}', ref(a/b)
         else:
-            return  f'x / {a} = {b}', round(a * b, 2)
+            return  f'x / {a} = {b}', ref(a*b)
 
 # quadratic_equation
 def generate_quadratic_equation():
+    ran = [i for i in range(-10, 0)] + [j for j in range(1, 11)]
+    ran1 = [i for i in range(-20, 0)] + [j for j in range(1, 21)]
     while True:
-        a = randint(1, 10)
-        b = randint(-20, 20)
-        c = randint(-20, 20)
-        s1, s2, s3 = choice(["", "-"]), choice(["+", "-"]), choice(["+", "-"])
-        equation = f"{s1}{abs(a) if a != 1 else ''}x^2 {s2} {abs(b)}x {s3} {abs(c)} = 0"
+        a = choice(ran)
+        b = choice(ran1)
+        c = choice(ran1)
+        equation = f"{a}x^2 {'+' if b >= 0 else ''} {b}x {'+' if c >= 0 else ''} {c} = 0"
         D = (b**2) - (4*a*c)
         if D < 0:
             continue
         elif D == 0:
-            answer = round((-b) / (2*a), 2)
+            answer = ref((-b) / (2*a))
         else:
             x1: float = (-b + (D**0.5)) / (2*a)
             x2: float = (-b - (D**0.5)) / (2*a)
@@ -103,7 +111,7 @@ def generate_quadratic_equation():
                 continue
             if j > 1e3 or j < 1e-3:
                 continue
-            answer = [x1, x2]
+            answer = [ref(x1), ref(x2)]
         if a == 1:
             # equation = equation[]
             pass
