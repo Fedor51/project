@@ -7,15 +7,15 @@ def get(complexity: int):
     # complexity is 0(easy), 1(middle) or 2(hard). 
     
     # easy
-    if not complexity:  
-        problem, answer = math_gen_complexity0()
-        return problem, answer
+    if not complexity: 
+        f = choice([add, substract, multiplicate, division])
+        return f() 
     # middle
     elif complexity == 1:
-        f = choice([math_gen_complexity1, math_gen_complexity2, math_gen_complexity2_1, math_gen_equation0])
+        f = choice([math_gen_complexity1, exp, math_gen_complexity2_1, math_gen_equation0, linear_equation])
         return f()
     # hard
     else: 
-        problem, answer = generate_quadratic_equation()
-        return problem, answer
+        f = choice([generate_quadratic_equation, math_gen_equation1, root])
+        return f()
     

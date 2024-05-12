@@ -1,0 +1,5 @@
+Flask==3.0.3
+Flask-SQLAlchemy==3.1.1
+mysqlclient==2.2.4
+requests==2.31.0
+mathgenerator==1.5.0
