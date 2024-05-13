@@ -46,7 +46,7 @@ def get_user(id):
         "email": user.email,
         "password": user.password,
         "phone": user.phone,
-        "tests": [{"id": t.id, "count": t.count, "time": t.time, "user_id": t.user_id} for t in tests]
+        "tests": [{"id": t.id, "count": t.count, "time": t.time, "user_id": t.user_id,"correct": t.correct} for t in tests]
     }
 
     return jsonify(data)
@@ -56,7 +56,7 @@ def get_test(user_id):
     tests = Test.query.filter_by(user_id=user_id).all()
 
     data = {
-       "tests": [{"id": t.id, "count": t.count, "time": t.time, "user_id": t.user_id} for t in tests]
+       "tests": [{"id": t.id, "count": t.count, "time": t.time, "user_id": t.user_id, "correct": t.correct} for t in tests]
     }
     return jsonify(data)
 
@@ -69,7 +69,7 @@ def get_all_users():
         "email": user.email, 
         "password": user.password, 
         "phone": user.phone,
-        "tests": [{"id": t.id, "count": t.count, "time": t.time, "user_id": t.user_id} for t in Test.query.filter_by(user_id=user.id).all()]
+        "tests": [{"id": t.id, "count": t.count, "time": t.time, "user_id": t.user_id, "correct": t.correct} for t in Test.query.filter_by(user_id=user.id).all()]
         } for user in users ]
     return jsonify(data)
 
@@ -81,6 +81,7 @@ def get_all_tests():
         "count": test.count, 
         "time": test.time, 
         "user_id": test.user_id, 
+        "correct": test.correct
         } for test in tests ]
     
     return jsonify(data)
@@ -102,7 +103,7 @@ def add_user():
 def add_test():
     
     data = request.json
-    test = Test(data["count"], data["time"], data["user_id"])
+    test = Test(data["count"], data["time"], data["user_id"], data["correct"])
 
     print(data, test)
 
@@ -141,8 +142,37 @@ def drop_test(id):
 
     return "Test deleted successfully"
 
+# stats
+@app.route("/get/stats/<int:id>", methods=['GET'])
+def get_stats(id):
+    user = User.query.get_or_404(id)
+    tests = Test.query.filter_by(user_id=id).all()
+    total = sum(t.count for t in tests)
+    total_correct = sum(t.correct for t in tests)
+    data = {
+        "name" : user.name,
+        "tests": [{"id": t.id, "count": t.count, "time": t.time, "user_id": t.user_id, "correct": t.correct} for t in tests],
+        "total" : total,
+        "total_correct" : total_correct,
+        "correct_rate":  f"{round((total_correct / total) * 100, 2)}%" if total != 0 else "0.0%"
+    }
+    return jsonify(data)
 
-# Реализация функции для обработки результата, она должна будет округлить и привести float в int если возможно, 
-# Пример: answer = 3.(3) -> 3.3 ; 
-# answer = 16.0(float) -> 16(int)
+
+# rating 
+@app.route("/get/rating", methods=['GET'])
+def get_rating():
+    # users = User.query.order_by(User.test.count)
+    # data = [{
+    #     "id": id, 
+    #     "name": user.name,
+    #     "email": user.email,
+    #     "password": user.password,
+    #     "phone": user.phone,
+    # } for user in users]
+
+    # return jsonify(data)
+    pass
+
+
 # 0**0 = 1  python logic!!!
