@@ -9,25 +9,20 @@ app.config.from_object(Config)
 db.init_app(app)
 
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    response = request.json
+    email = response["email"]
+    password = response["password"]
+    user = User.query.filter_by(email=email).first_or_404()
+    if user.password == password:
+        print("1")
+        return "1"
+    print("0")
+    return "0"
+
 @app.route("/get_problem/<int:complexity>", methods=["GET"])
 def get_problem(complexity):
-    # query[0] is 0(problem), 1(equation)
-    # query[1] is problem complexity: 0 or 1 (None if query[0] is 1)
-    
-    # if not query[0]:
-    #     problem, answer = get_problem(query[1])
-    #     data = {
-    #         "origin": problem, 
-    #         "answer": answer
-    #     }
-    # else:
-    #     equation, root = get_equation() 
-       
-    #     data = {
-    #         "origin": equation,
-    #         "answer": root
-    #     }
-    # return jsonify(data) 
     resp = get(complexity)
     data = {
         "problem": resp[0],
