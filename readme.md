@@ -1,3 +1,5 @@
+# Description
+Пока части еще не связаны между собой
 # Goals:  
 * Поменять все функции, связаные с классами User, Test, Question: 
     - [ ] get all users
