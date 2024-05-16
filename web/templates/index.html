@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+  <form method="post" action="{{url_for('submit')}}">
+  <h1>Выберите сложность примеров</h1>
+  
+    <input type="radio" name="Level" class="form-check-input" value="easyLevel"> Легкая<br>
+    <input type="radio" name="Level" class="form-check-input" value="normalLevel"> Нормальная<br>
+    <input type="radio" name="Level" class="form-check-input" value="hardLevel"> Сложная<br><br>
+    <input type="submit" class="btn btn-primary" value="Подтвердить">
+    
+  
+  </form>
+{% endblock %}

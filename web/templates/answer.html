@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+    
+    <!-- <form method="get" action="/display_data/">
+            <button type="submit" name="your" class="btn btn-primary">Primary</button>
+    </form> -->
+    <forms action="url_for('index')">
+        <label>Ответы отвечены правильно:</label>
+        <p>{{goodAnswers}}</p>
+        <p>Хотите продолжить отвечать?</p>
+        <input type="submit" value="продолжить">
+    </form>
+{% endblock %}
