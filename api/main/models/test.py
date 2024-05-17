@@ -6,7 +6,7 @@ class Test(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"),nullable=False)
     
     users = db.relationship("User", back_populates="tests")
-    questions = db.relationship("Question", back_populates="tests")
+    # questions = db.relationship("Question", back_populates="tests")
     
     def __init__(self, date, user_id) -> None:   
         self.date = date

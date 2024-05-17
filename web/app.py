@@ -61,13 +61,11 @@ def submit():
     znaks=''.join(znaks)
     return redirect(url_for(".display",numsInPrim=numsInPrim,znaki=znaks,answers=0,colOfPrim=6,truePrim='None')) #colOfPrim-затычка
 
-
 @app.route('/YGT')
 def answer():
     api_url = 'http://127.0.0.1:5000/primdata'
     response = requests.get(api_url)
     return render_template('answer.html',goodAnswers=response.json()['answers'])
-
 
 # Страница для отображения данных
 @app.route('/trueDisplay/<numsInPrim>/<znaki>/<colOfPrim>/<truePrim>',methods=["GET",'POST'])
@@ -106,7 +104,6 @@ def display(numsInPrim,znaki,colOfPrim,truePrim):
     
     return render_template('display.html',Prim=truePrim,znaki=znaki,numsInPrim=numsInPrim,colOfPrim=colOfPrim,truePrim=truePrim)
 
-
 @app.route('/primdata')
 def primData():
 
@@ -119,8 +116,6 @@ def normilizer(foo):
     valid_operators = {'+', '-', '*', '÷', '^'}
     result = [x for x in foo if x in valid_operators]
     return result
-
-
 
 def finderOfIndex(baz,foo):
     if baz in foo:
@@ -145,36 +140,68 @@ def custom_eval(expression):
 
 
 @app.route('/log/<username>/<password>')
-def log(username, password):
-    api_url = 'http://127.0.0.1:5000/data'
-    response = requests.get(api_url)
-    
-    data = response.json()
-    
-    if username in data['users'] and password == data['passwords'][data['users'].index(username)]:
-        session['username'] = username
-        return redirect(url_for('index'))
-    return redirect(url_for('logun'))
+def log(username, password):  # TODO: Должно принимать email, password
+    api_url = 'http://127.0.0.1:5001/login' # Ссылка на функцию из api
 
+    # response = requests.get(api_url)
+    # data = response.json()
+    # if username in data['users'] and password == data['passwords'][data['users'].index(username)]:
+    #     session['username'] = username
+    #     return redirect(url_for('index'))
+    # return redirect(url_for('logun'))
+    
+    # Пример данных, которые должны отправляться на api
+    data = {
+        "email": "1",
+        "password": "1",
+    }
+    # Отправяем данные для проверки на api и получаем ответ
+    response = requests.post(api_url, json=data).text
+
+    # Проверяем, если ответ "1", то такой пользователь существует и логин успешный
+    if response == "1":
+        # TODO:  Перенаправляем на основную страничку пользователя
+        print("Login went successfully")
+
+    # Такого пользователя не существует, логин не удался
+    else:
+        # TODO: Перенаправляем пользователя на другую страничку, например с регистрацией
+        print("Login went wrong, email or password is invalid")
+        pass
+
+    return "0"
 
 @app.route('/registration', methods=['POST', 'GET'])
 def registration():
     if request.method == 'POST':
+    
+        # TODO: Ошибка
+        # werkzeug.exceptions.BadRequestKeyError: 400 Bad Request: The browser (or proxy) sent a request that this server could not understand.
+        # KeyError: 'firstName'
         
-        username=request.form['firstName']
-        password = request.form['password']
-        mail = request.form['mail']
-        data={
-        'name':username,
-        'password':password,
-        'email':mail,
-        'phone':0
+        # username=request.form['firstName']
+        # password = request.form['password']
+        # mail = request.form['mail']
+        # data={
+        # 'name':username,
+        # 'password':password,
+        # 'email':mail,
+        # 'phone':0
+        # }
+        # session['username'] = username
+
+        # Пример данных, которые нужно отправлять
+        data1 = {
+            "first_name": "10",
+            "surname": "10",
+            "last_name": "10",
+            "email": "10@example.com",
+            "password": "10",
+            "phone": "+10(xxx)-xxx-xx-xx"
         }
-        session['username'] = username
 
-
-        requests.post("http://127.0.0.1:5001/add_user", json=data)
-
+        # Отправляем данные на api для создания пользователя
+        requests.post("http://127.0.0.1:5001/add_user", json=data1)
         return redirect(url_for('index'))
     return render_template('registration.html')
 

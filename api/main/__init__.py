@@ -14,10 +14,16 @@ def login():
     response = request.json
     email = response["email"]
     password = response["password"]
-    user = User.query.filter_by(email=email).first_or_404()
+    user = User.query.filter_by(email=email).first()
+
+    if user == None:
+        print("Email is invalid")
+        return "0"
+    
     if user.password == password:
         print("Login went successfully") ; return "1"
-    print("Login went wrong, email or password is invalid") ;  return "0"
+    
+    print("Login went wrong, password is invalid") ;  return "0"
 
 @app.route("/get_problem/<int:complexity>", methods=["GET"])
 def get_problem(complexity):
@@ -88,7 +94,7 @@ def add_user():
     data = request.json
     user = User(data["first_name"], data["surname"], data["last_name"], data["email"], data["password"], data["phone"])
 
-    print(data)
+    print("Add new user:", data)
 
     db.session.add(user)
     db.session.commit()

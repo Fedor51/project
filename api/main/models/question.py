@@ -7,7 +7,7 @@ class Question(db.Model):
     is_correct = db.Column(db.Tinyint, nullable=False)
     test_id = db.Column(db.Integer, db.ForeignKey("test.id"), nullable=False)
 
-    tests = db.relationship("Test", back_populates="questions")
+    # tests = db.relationship("Test", back_populates="questions")
     
     def __init__(self, problem, answer, is_correct) -> None:
         self.problem = problem
