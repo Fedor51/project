@@ -3,6 +3,7 @@ from config import Config
 from main.models import *
 from main.models.db import db
 from main.services import *
+from sqlalchemy import func
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -40,14 +41,20 @@ def get_user(id):
     tests = Test.query.filter_by(user_id=id).all()
 
     data = {
-        "id": id, 
         "first_name": user.first_name,
         "surname": user.surname,
         "last_name": user.last_name,
-        "email": user.email, 
+        "email": user.email,
         "password": user.password,
         "phone": user.phone,
-        "tests": [{"id": t.id, "date": t.date, "user_id": t.user_id} for t in tests]
+        "tests": [ 
+            {
+                "id": t.id,
+                "date": t.date,
+                "user_id": t.user_id, 
+                "questions": [{"problem": q.problem, "answer": q.answer, "is_correct": q.is_correct} for q in Question.query.filter_by(test_id=t.id).all()]
+            } for t in tests
+        ]
     }
 
     return jsonify(data)
@@ -57,36 +64,56 @@ def get_test(user_id):
     tests = Test.query.filter_by(user_id=user_id).all()
 
     data = {
-       "tests": [{"id": t.id, "date": t.date, "user_id": t.user_id} for t in tests]
+       "tests": [ 
+            {
+                "id": t.id,
+                "date": t.date,
+                "user_id": t.user_id, 
+                "questions": [{"problem": q.problem, "answer": q.answer, "is_correct": q.is_correct} for q in Question.query.filter_by(test_id=t.id).all()]
+            } for t in tests
+        ]
     }
     return jsonify(data)
 
 @app.route("/get/all_users", methods=["GET"])
 def get_all_users():
     users = User.query.all()
-    data = [{
-        "id": user.id,
-        "first_name": user.first_name, 
-        "surname": user.surname, 
-        "last_name": user.last_name, 
-        "email": user.email, 
-        "password": user.password, 
-        "phone": user.phone,
-        "tests": [{"id": t.id, "date": t.date, "user_id": t.user_id} for t in Test.query.filter_by(user_id=user.id).all()]
-        } for user in users ]
+    print(users)
+    data = {
+        "users": [
+                    { 
+                "first_name": user.first_name,
+                "surname": user.surname,
+                "last_name": user.last_name,
+                "email": user.email,
+                "password": user.password,
+                "phone": user.phone,
+                "tests": [ 
+                    {
+                        "id": t.id,
+                        "date": t.date,
+                        "user_id": t.user_id, 
+                        "questions": [{"problem": q.problem, "answer": q.answer, "is_correct": q.is_correct} for q in Question.query.filter_by(test_id=t.id).all()]
+                    } for t in Test.query.filter_by(user_id=user.id)
+                ]
+            } for user in users
+        ] 
+    }
     return jsonify(data)
 
 @app.route("/get/all_tests", methods=["GET"])
 def get_all_tests():
     tests = Test.query.all()
-    data = [{
-        "id": test.id,
-        "count": test.count, 
-        "time": test.time, 
-        "user_id": test.user_id, 
-        "correct": test.correct
-        } for test in tests ]
-    
+    data = {
+        "tests": [
+            {   
+            "id": t.id,
+            "date": t.date,
+            "user_id": t.user_id, 
+            "questions": [{"problem": q.problem, "answer": q.answer, "is_correct": q.is_correct} for q in Question.query.filter_by(test_id=t.id).all()]
+            } for t in tests
+        ]
+    }
     return jsonify(data)
 
 @app.route("/add_user", methods=["GET", "POST"])
@@ -120,12 +147,14 @@ def edit_user(id):
     data = request.json
     user = User.query.filter_by(id=id).first_or_404()
 
-    user.name = data["name"]
+    user.first_name = data["first_name"]
+    user.surname = data["surname"]
+    user.last_name = data["lastname"]
     user.email = data["email"]
-    user.phone = data["phone"]
     user.password = data["password"]
+    user.phone = data["phone"]
     db.session.commit()
-    print("User updated successfully")
+   
     return "User updated successfully"
 
 @app.route("/drop_user/<int:id>", methods=["GET"])
@@ -148,18 +177,41 @@ def drop_test(id):
 @app.route("/get/stats/<int:id>", methods=['GET'])
 def get_stats(id):
     user = User.query.get_or_404(id)
-    tests = Test.query.filter_by(user_id=id).all()
-    total = sum(t.count for t in tests)
-    total_correct = sum(t.correct for t in tests)
+    # tests = Test.query.filter_by(user_id=id).all()
+    # res = {
+    #     "first_name": user.first_name,
+    #     "surname": user.surname,
+    #     "last_name": user.last_name,
+    #     "email": user.email,
+    #     "password": user.password,
+    #     "phone": user.phone,
+    #     "tests": [ 
+    #         {
+    #             "id": t.id,
+    #             "date": t.date,
+    #             "user_id": t.user_id, 
+    #             "questions": [{"problem": q.problem, "answer": q.answer, "is_correct": q.is_correct} for q in Question.query.filter_by(test_id=t.id).all()]
+    #         } for t in tests
+    #     ]
+    # }
+    test_q = Test.query.filter_by(user_id=user.id)
+    
+    tests = test_q.all()
+    correct = 0
+    all_questions = 0
+
+    for t in tests:
+        for q in  Question.query.filter_by(test_id=t.id).all():
+            if q.is_correct:
+                correct += 1
+            all_questions += 1
+
     data = {
-        "name" : user.name,
-        "tests": [{"id": t.id, "count": t.count, "time": t.time, "user_id": t.user_id, "correct": t.correct} for t in tests],
-        "total" : total,
-        "total_correct" : total_correct,
-        "correct_rate":  f"{round((total_correct / total) * 100, 2)}%" if total != 0 else "0.0%"
+        "test_count": test_q.count(),
+        "question_count": all_questions,
+        "correct_rate": f"{round((correct / all_questions) * 100, 2)}%" if all_questions != 0 else "0.0%"
     }
     return jsonify(data)
-
 # rating 
 @app.route("/get/rating", methods=['GET'])
 def get_rating():
