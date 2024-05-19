@@ -1,5 +1,5 @@
 # Description
-Api и web связаны через функции registation и log(находятся в web). Изменения, которые нужно сделать в web помечены комментарием **TODO:** 
+Api и web связаны через функции registation, log(находятся в web) и get_problem. Изменения, которые нужно сделать в web помечены комментарием **TODO:** 
 # Installation
 ```
 git clone https://github.com/Fedor51/project

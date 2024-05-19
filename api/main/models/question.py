@@ -9,7 +9,8 @@ class Question(db.Model):
 
     # tests = db.relationship("Test", back_populates="questions")
     
-    def __init__(self, problem, answer, is_correct) -> None:
+    def __init__(self, problem, answer, is_correct, test_id) -> None:
         self.problem = problem
         self.answer = answer
         self.is_correct = is_correct
+        self.test_id = test_id

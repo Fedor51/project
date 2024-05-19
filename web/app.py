@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, url_for, request, jsonify,se
 from random import randint, choice
 import string
 import requests
+from pprint import pprint
 
 app = Flask(__name__)
 
@@ -190,6 +191,7 @@ def registration():
         # }
         # session['username'] = username
 
+        api_url = "http://127.0.0.1:5001/add_user"
         # Пример данных, которые нужно отправлять
         data1 = {
             "first_name": "10",
@@ -201,9 +203,26 @@ def registration():
         }
 
         # Отправляем данные на api для создания пользователя
-        requests.post("http://127.0.0.1:5001/add_user", json=data1)
+        requests.post(api_url, json=data1)
         return redirect(url_for('index'))
     return render_template('registration.html')
+
+
+@app.route("/get_problem", methods=["GET"]) # Функция для обращения за примером
+def get_problem():
+    
+    count = 3 # TODO: Получение данных от пользователя
+    complexity = 1
+
+    api_url = f"http://127.0.0.1:5001/get_problem/{complexity}/{count}"
+    response = requests.get(api_url).json() # Получение ответа от api
+
+    pprint(response)
+    return "0" # TODO: Перенаправление на нужную страничку
+
+@app.route("/save_test", methods=["POST"]) # Функция для сохранения всех примеров в бд
+def save_test():
+    pass
 
 if __name__ == '__main__':
     app.run(debug=True)
