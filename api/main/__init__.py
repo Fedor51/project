@@ -60,7 +60,7 @@ def save_test():
     #     "user_id": ...(Можно получить из session)
     # }
 
-    test = Test(datetime.today(), data["user_id"])
+    test = Test(datetime.today().strftime("%d.%m.%Y"), data["user_id"])
     db.session.add(test)
     db.session.commit()
 
@@ -68,6 +68,7 @@ def save_test():
         q = Question(question["problem"], question["answer"], question["is_correct"], test.id)
         db.session.add(q)
         db.session.commit()
+    return "0"
 
 @app.route("/get/user/<int:id>", methods=["GET"])
 def get_user(id):

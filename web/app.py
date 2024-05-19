@@ -220,9 +220,30 @@ def get_problem():
     pprint(response)
     return "0" # TODO: Перенаправление на нужную страничку
 
-@app.route("/save_test", methods=["POST"]) # Функция для сохранения всех примеров в бд
+@app.route("/save_test", methods=["GET"]) # Функция для сохранения всех примеров в бд
 def save_test():
-    pass
+    
+    # Пример отправляемых данных
+    data = {
+        "questions": [
+            {
+            "problem": "KFJKJ",
+            "answer": "FJDKFD",
+            "test_id": 1,
+            "is_correct": 0,
+            },
+            {
+            "problem": "fdfd",
+            "answer": "fdsfd",
+            "test_id": 1,
+            "is_correct": 1,
+            }
+        ],
+        "user_id": 1
+    }
+    api_url = "http://127.0.0.1:5001/save_test"
+    requests.post(api_url, json=data)
+    return jsonify(data)
 
 if __name__ == '__main__':
     app.run(debug=True)
