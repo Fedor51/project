@@ -1,0 +1,16 @@
+<body>
+    <form action="{{url_for('registration')}}", method="post">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <br>
+        <div class="input-group mb-3" style="margin-top: 5px;">
+            <input type="text" class="form-control" placeholder='{{mail}}'  aria-describedby="basic-addon2" name="mail">
+            <span class="input-group-text">@</span>
+            <input type="text" name="mailmail" class="form-control" placeholder="mail" aria-label="mail">
+          </div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <br>
+        <button type="submit" class="btn btn-success">register</button>
+    </form>
+</body>

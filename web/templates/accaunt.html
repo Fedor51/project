@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<form action="/accaunt" method="post">
+    <div>Имя пользователя:</div>
+    <input type="text" class="form-control" name="newname" placeholder="{{name}}" aria-label="{{name}}" aria-describedby="basic-addon1">
+    <div>Пароль:</div>
+    <input type="text" class="form-control" placeholder="{{password}}" aria-label="{{password}}" aria-describedby="basic-addon1" name="newpassword">
+    <div class="input-group mb-3" style="margin-top: 5px;">
+        <input type="text" class="form-control" placeholder='{{mail}}'  aria-describedby="basic-addon2" name="mail">
+        <span class="input-group-text">@</span>
+        <input type="text" name="mailmail" class="form-control" placeholder="{{mailmail}}" aria-label="mail">
+      </div>
+    <div>Примеров решено:</div>
+    <div>{{primResh}}</div>
+    <div name="progressbar" id="pb" style="width: 250px;background: linear-gradient(90deg, rgb(0, 255, 17) {{grad}}%, rgba(2,0,36,1) 4%);height: 15px"></div>
+    <input type="submit" class="btn btn-primary" style="margin: 25px;margin-left: 5px" value="Подтвердить изменения">
+    <input type="reset" class="btn btn-danger" style="margin: 25px;margin-left: 5px;" value="Отменить изменения">
+</form>
+<p>Уровень Престижа: {{prist}}</p>
+{% endblock %}

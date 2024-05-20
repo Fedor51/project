@@ -1,0 +1,20 @@
+<body>
+    <h1>Login</h1>
+    <form method="post" action="{{url_for('logun')}}">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required>
+    <br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+    <br>
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" value="mail adress" aria-describedby="basic-addon2" name="mail">
+        <span class="input-group-text" id="basic-addon2">@example.com</span>
+      </div>
+    <button type="submit">Login</button>
+    </form>
+    <form action="{{url_for('registration')}}">
+        <input type="submit" value="No acc?">
+    </form>
+   </body>
+   

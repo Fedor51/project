@@ -17,7 +17,7 @@ def math_gen_complexity1(limit: int = 10, operators=operators):
         except ZeroDivisionError: continue
         if answer > 200 or answer < -200:
             continue
-        return problem, answer
+        return problem, str(answer)
     
 
 def math_gen_complexity2_1(operators=['+', '-', '*', '/', '**']): 
