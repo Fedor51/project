@@ -27,7 +27,7 @@ def login():
     
     print("Login went wrong, password is invalid") ;  return "0"
 
-@app.route("/get_problem/<int:complexity>/<int:count>", methods=["GET"])
+@app.route("/get/problem/<int:complexity>/<int:count>", methods=["GET"])
 def get_problem(complexity, count):
 
     problems = [get(complexity) for i in range(count)]
@@ -47,18 +47,6 @@ def get_problem(complexity, count):
 @app.route("/save_test", methods=["POST"])
 def save_test():
     data = request.json
-    # data = {
-    #     "questions": [
-    #             {
-    #         "problem": pr[0],
-    #         "answer": pr[1],
-    #         "test_id": ...,
-    #         "is_correct": ...,
-    #         },
-    #         {...}
-    #     ]
-    #     "user_id": ...(Можно получить из session)
-    # }
 
     test = Test(datetime.today().strftime("%d.%m.%Y"), data["user_id"])
     db.session.add(test)
