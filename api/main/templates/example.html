@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %} Title {% endblock %}
+{% block content %}
+<p>Inputs</p>
+<form method="post" action="{{ url_for('index') }}">
+
+    {% for i in range(10) %}
+    <label for="{{ i }}">Input:</label>
+    <input type="text" id="{{ i }}" name="{{ i }}" required><br>
+    {% endfor %}
+<button type="submit">Save</button>
+{% endblock %}

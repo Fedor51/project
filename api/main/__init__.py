@@ -1,15 +1,24 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from config import Config
 from main.models import *
 from main.models.db import db
 from main.services import *
 from datetime import datetime
 from pprint import pprint
+from sqlalchemy import desc
 
 app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
 
+
+
+@app.route("/", methods=["GET", "POST"])
+def index():
+    if request.method == "POST":
+        print("Hello World!")
+        return "0"
+    return render_template("example.html")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -198,7 +207,7 @@ def drop_test(id):
 
 # stats
 @app.route("/get/stats/<int:id>", methods=['GET'])
-def get_stats(id):
+def get_stats(id, ):
     user = User.query.get_or_404(id)
     test_q = Test.query.filter_by(user_id=user.id)
     
@@ -213,6 +222,7 @@ def get_stats(id):
             all_questions += 1
 
     data = {
+        "id": id,
         "test_count": test_q.count(),
         "question_count": all_questions,
         "correct_rate": f"{round((correct / all_questions) * 100, 2)}%" if all_questions != 0 else "0.0%"
@@ -221,17 +231,33 @@ def get_stats(id):
 # rating 
 @app.route("/get/rating", methods=['GET'])
 def get_rating():
-    # users = User.query.order_by(User.test.count)
-    # data = [{
-    #     "id": id, 
-    #     "name": user.name,
-    #     "email": user.email,
-    #     "password": user.password,
-    #     "phone": user.phone,
-    # } for user in users]
+    # qry = session.query(Data).filter(Data.user_id == user_id).order_by(desc(Data.counter).limit(1)    
+    data = {
+        "users":[
+                get_stats(i+1).json for i in range(User.query.count())
+        ]
+    }
+    max_test_count = sorted(data["users"], key=lambda d: d['test_count'], reverse=True)[0]
+    max_question_count = sorted(data["users"], key=lambda d: d['question_count'], reverse=True)[0]
 
-    # return jsonify(data)
-    pass
+    data1 = data.copy()
+    data1["users"].remove(max_test_count)
+    for i in data1["users"]:
+        if i["test_count"] == max_test_count["test_count"]:
+            max_test_count = "0"
+            break
+
+    data["users"].remove(max_question_count)
+    for i in data["users"]:
+        if i["question_count"] == max_question_count["question_count"]:
+            max_question_count = "0"
+            break
+    d = {   
+        "max_test_count": max_test_count, # "0" if it does not seem to have leader  
+        "max_question_count": max_question_count,
+    }
+    pprint(d)
+    return jsonify(d)
 
 
 # 0^0 = 1  python logic!!!

@@ -1,5 +1,5 @@
 
-password = "qwerty"
+password = "root"
 
 class Config():
     SECRET_KEY = 'key'
