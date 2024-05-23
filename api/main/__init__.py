@@ -11,14 +11,12 @@ app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
 
-
-
-@app.route("/", methods=["GET", "POST"])
-def index():
-    if request.method == "POST":
-        print("Hello World!")
-        return "0"
-    return render_template("example.html")
+# @app.route("/", methods=["GET", "POST"])
+# def index():
+#     if request.method == "POST":
+#         print("Hello World!")
+#         return "0"
+#     return render_template("example.html")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -88,7 +86,6 @@ def get_user(id):
             } for t in tests
         ]
     }
-
     return jsonify(data)
 
 @app.route("/get/test/<int:user_id>", methods=["GET"])
