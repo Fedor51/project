@@ -1,6 +1,4 @@
 from flask import Flask, render_template, redirect, url_for, request, jsonify,session
-from random import randint, choice
-import string
 import requests
 
 app = Flask(__name__)
@@ -45,34 +43,19 @@ def logun():
         'email':username,
         'password':password
     }
-    requests.post("http://127.0.0.1:5001/login", json=data)
-    if input()=='0':
-        return redirect(url_for('.login'))
+    response = requests.post("http://127.0.0.1:5001/login", json=data)
+    
+    if response == '0':
+        return redirect(url_for('login'))
+
     session['username'] = username
-    return redirect(url_for('/'))
+    return redirect(url_for('index'))
 
 @app.route('/logout') 
 def logout(): 
     # Удаляем имя пользователя из сессии при выходе
     session.pop('username', None) 
     return render_template('login.html')
-
-@app.route('/submit', methods=['POST'])
-def submit():
-    choice = request.form['Level']
-    #print(f'Выбран вариант: {choice}')
-    znaks=['+','-','*','÷','^']
-    if choice=='hardLevel':
-        numsInPrim = randint(3,16)
-    elif choice=="normalLevel":
-        znaks.pop()
-        numsInPrim = randint(3,11)
-    else:
-        znaks=znaks[:-3]
-        numsInPrim = randint(3,5)
-    znaks=''.join(znaks)
-    return redirect(url_for(".display",numsInPrim=numsInPrim,znaki=znaks,answers=0,colOfPrim=6,truePrim='None')) #colOfPrim-затычка
-
 
 @app.route('/YGT')
 def answer():
@@ -82,78 +65,22 @@ def answer():
 
 
 # Страница для отображения данных
-@app.route('/trueDisplay/<numsInPrim>/<znaki>/<colOfPrim>/<truePrim>',methods=["GET",'POST'])
-def display(numsInPrim,znaki,colOfPrim,truePrim):
-    colOfPrim=int(colOfPrim)
-    global answers
-    if colOfPrim<=0:
-        primData()
-        return redirect(url_for('.answer'))
+@app.route('/display_answer',methods=["GET",'POST'])
+def display():
+    if request.form == "GET":
+        choice = request.form["Level"]
+        compexity = int(choice)
+        count = 5
+        data = requests.get(f'http://127.0.0.1:5001/get/problem/{compexity}/{count}')
+        return render_template("display.html", data=data)
     
-    
-    if request.method=='POST' and colOfPrim!=6:
-        answer=int(custom_eval(truePrim))
-        userA=request.form['YourAnswer']
-        
-        if userA != '' and userA not in list(string.ascii_letters):
-            userA=int(userA)
-            if answer==userA:
-                answers+=1
-        else:
-            redirect(url_for('.BRUH',numsInPrim=numsInPrim,znaki=znaki,colOfPrim=colOfPrim))
-    znaki=normilizer(list(znaki))
-    numsInPrim=int(numsInPrim)    
-    colOfPrim-=1   
-    prim=list()
-    for i in range(1,numsInPrim+1,2):
-        prim.append(str(randint(1,100)))
-        prim.append(choice(znaki))
-        if prim[-1]=="^":
-            prim.append(str(randint(1,3)))
-            prim.append(choice(znaki[:-1]))
-    prim.pop(-1)
-    truePrim="".join(prim)
+    # ###
+    answer = request.form["YourAnswer"]
+    if answer == data["answer"]:
 
-    answer=int(custom_eval(truePrim))
-    
+    print(answer)
+
     return render_template('display.html',Prim=truePrim,znaki=znaki,numsInPrim=numsInPrim,colOfPrim=colOfPrim,truePrim=truePrim)
-
-
-@app.route('/primdata')
-def primData():
-
-    primData={
-        'answers':answers
-    }
-    return jsonify(primData)
-
-def normilizer(foo):
-    valid_operators = {'+', '-', '*', '÷', '^'}
-    result = [x for x in foo if x in valid_operators]
-    return result
-
-
-
-def finderOfIndex(baz,foo):
-    if baz in foo:
-        return foo.index(baz)
-    else:
-        return None
-
-def custom_eval(expression):
-    mapping = {
-        '÷': '/',
-        '^': '**' 
-
-    }
-    
-    # Замена символов с помощью map
-    for key, value in mapping.items():
-        expression = expression.replace(key, value)
-    
-    # Выполнение выражения после замены
-    result = eval(expression)
-    return result
 
 
 @app.route('/log/<username>/<password>')

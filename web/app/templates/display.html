@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
-    <form method="post" action="{{url_for('.display',numsInPrim=numsInPrim,znaki=znaki,colOfPrim=colOfPrim,truePrim=truePrim)}}">
-    <h1>Пример</h1>
-    
-    <p>{{ Prim }}=</p>
+    <form method="post" action="{{ url_for('display') }}">
+    <h1>Примеры</h1>
+    {{ for question in data["questions"] }}
+
+    <p>{{ question["problem"] }} </p>
     <input type="text" id="YourAnswer" name="YourAnswer" required>
-    <button type="submit" class="btn btn-primary" name="But">Primary</button>
+    {{ endfor }}
+    <button type="submit" class="btn btn-primary" name="But">Enter</button>
     </form>
 {% endblock %}
