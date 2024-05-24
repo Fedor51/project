@@ -78,7 +78,7 @@ def display():
     answer = request.form["YourAnswer"]
     if answer == data["answer"]:
 
-    print(answer)
+        print(answer)
 
     return render_template('display.html',Prim=truePrim,znaki=znaki,numsInPrim=numsInPrim,colOfPrim=colOfPrim,truePrim=truePrim)
 
