@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block subtitle %}Просмотр ответов{% endblock %}
+{% block content %}
+
+<div class="container" id="con">
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <form id="form" action="{{ url_for('index') }}">
+            <h4>Ответы:</h4>
+            {% if complexity != 2 %}
+            <ol class="list-group list-group-numbered">
+                {% for i in ["0", "1", "2", "3", "4"] %}
+                <li class="list-group-item">
+                    {{ data["questions"][i]["problem"] }}
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="width: 7rem;">Ваш ответ:</span>
+                        <span class="input-group-text" style="width: 6rem;">{{ answers[loop.index0] }}</span>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="width: 7rem;">Ответ:</span>
+                        <span class="input-group-text" style="width: 6rem;">{{ data['questions'][i]['answer'] }}</span>
+                    </div>
+                </li>
+                {% endfor %}
+            </ol>
+
+            {% else %}
+            <ol>
+                {% for i in ["0", "1", "2", "3", "4"] %}
+                <li>
+                    <p>Вопрос: {{ data["questions"][i]["problem"] }}</p>
+                    <p>Ваш ответ: {{ answers[loop.index0][0] }}, {{
+                        answers[loop.index0][1] }}</p>
+                    <p>Ответ: {{ data["questions"][i]["answer"][0] }}, {{
+                        data["questions"][i]["answer"][1] }}</p>
+                </li>
+                {% endfor %}
+            </ol>
+            {% endif %}
+            <h4>Хотите продолжить?</h4>
+                <input type="submit" id="btn" class="btn btn-primary " value="Продолжить">
+            </form>
+        </div>
+    </div>
+</div>
+<style>
+    h4,p {
+        margin: 0;
+    }
+
+    ::before {
+        font-weight: bold;
+    }
+
+    .mb-3 {
+        margin-bottom: 0.5rem !important;
+    }
+    #form {
+        display: flex;
+        flex-direction: column;
+        justify-content: left;
+        gap: var(--bs-card-spacer-y) var(--bs-card-spacer-x);
+    }
+    #con {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 4rem;
+        /* position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -17rem); */
+    }
+</style>
+{% endblock %}

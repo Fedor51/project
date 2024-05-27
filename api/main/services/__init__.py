@@ -12,10 +12,10 @@ def get(complexity: int):
         return f() 
     # middle
     elif complexity == 1:
-        f = choice([math_gen_complexity1, exp, math_gen_complexity2_1, math_gen_equation0, linear_equation])
+        f = choice([math_gen_complexity1, exp, math_gen_complexity2_1, math_gen_equation0, linear_equation, root])
         return f()
-    # hard
+    # hard 
     else: 
-        f = choice([generate_quadratic_equation, math_gen_equation1, root])
+        f = choice([generate_quadratic_equation, math_gen_equation1])
         return f()
     

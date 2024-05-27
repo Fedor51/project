@@ -18,4 +18,4 @@ cd web
 app.py
 ```
 # Goals 
-get_user_by_email, app
+drop_user

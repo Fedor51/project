@@ -6,17 +6,12 @@ from main.services import *
 from datetime import datetime
 from pprint import pprint
 from sqlalchemy import desc
+from copy import deepcopy
 
 app = Flask(__name__)
 app.config.from_object(Config)
 db.init_app(app)
 
-# @app.route("/", methods=["GET", "POST"])
-# def index():
-#     if request.method == "POST":
-#         print("Hello World!")
-#         return "0"
-#     return render_template("example.html")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -26,30 +21,66 @@ def login():
     user = User.query.filter_by(email=email).first()
 
     if user == None:
-        print("Email is invalid")
-        return "0"
+        print("Login went wrong, email is invalid") ; return jsonify("0")
     
     if user.password == password:
-        print("Login went successfully") ; return "1"
+        print("Login went successfully") ; return jsonify("1")
     
-    print("Login went wrong, password is invalid") ;  return "0"
+    print("Login went wrong, password is invalid") ;  return jsonify("0")
 
 @app.route("/get/problem/<int:complexity>/<int:count>", methods=["GET"])
 def get_problem(complexity, count):
 
     problems = [get(complexity) for i in range(count)]
     data = {
-        "questions": [
+        "user_id": None,
+        "questions": 
                 {
-            "problem": pr[0],
-            "answer": pr[1],
-            "test_id": None,
-            "is_correct": None,
-            } for pr in problems
-        ]
-    }
+                idx: {
+                    "problem": pr[0],
+                    "answer": pr[1], # TODO: change answers view(goal: get_problem(answers))
+                    "is_correct": 0,
+                    "solutions": 1 if complexity != 2 else 2
+                } for idx, pr in enumerate(problems)
+            } 
+        }
     pprint(data)
     return jsonify(data)
+
+@app.route("/get/user_by_email", methods=["POST"])
+def get_user_by_email():
+    email = request.json
+    user = User.query.filter_by(email=email).first()
+    tests = Test.query.filter_by(user_id=user.id).all()
+    stats = get_stats(user.id).json
+
+    data = {
+        "first_name": user.first_name,
+        "surname": user.surname,
+        "last_name": user.last_name,
+        "email": user.email,
+        "password": user.password,
+        "phone": user.phone,
+        "tests": [ 
+            {
+                "id": t.id,
+                "date": t.date,
+                "user_id": t.user_id, 
+                "questions": [{"problem": q.problem, "answer": q.answer, "is_correct": q.is_correct} for q in Question.query.filter_by(test_id=t.id).all()]
+            } for t in tests
+        ],
+        "test_count": stats["test_count"],
+        "question_count": stats["question_count"],
+        "correct_rate": stats["correct_rate"],
+        "correct_questions": stats["correct_questions"],
+    }
+    return jsonify(data)
+
+@app.route("/get/user_id_by_email", methods=["POST"])
+def get_user_id_by_email():
+    email = request.json
+    user = User.query.filter_by(email=email).first()
+    return jsonify(user.id)
 
 @app.route("/save_test", methods=["POST"])
 def save_test():
@@ -59,8 +90,8 @@ def save_test():
     db.session.add(test)
     db.session.commit()
 
-    for question in data["questions"]:
-        q = Question(question["problem"], question["answer"], question["is_correct"], test.id)
+    for i in data["questions"]:
+        q = Question(data["questions"][i]["problem"], str(data["questions"][i]["answer"]), data["questions"][i]["is_correct"], test.id)
         db.session.add(q)
         db.session.commit()
     return "0"
@@ -86,7 +117,7 @@ def get_user(id):
             } for t in tests
         ]
     }
-    return jsonify(data)
+    return jsonify(data) 
 
 @app.route("/get/test/<int:user_id>", methods=["GET"])
 def get_test(user_id):
@@ -150,7 +181,7 @@ def add_user():
     data = request.json
     user = User(data["first_name"], data["surname"], data["last_name"], data["email"], data["password"], data["phone"])
 
-    print("Add new user:", data)
+    print("Added new user:", data)
 
     db.session.add(user)
     db.session.commit()
@@ -178,7 +209,7 @@ def edit_user(id):
 
     user.first_name = data["first_name"]
     user.surname = data["surname"]
-    user.last_name = data["lastname"]
+    user.last_name = data["last_name"]
     user.email = data["email"]
     user.password = data["password"]
     user.phone = data["phone"]
@@ -204,7 +235,7 @@ def drop_test(id):
 
 # stats
 @app.route("/get/stats/<int:id>", methods=['GET'])
-def get_stats(id, ):
+def get_stats(id):
     user = User.query.get_or_404(id)
     test_q = Test.query.filter_by(user_id=user.id)
     
@@ -219,10 +250,10 @@ def get_stats(id, ):
             all_questions += 1
 
     data = {
-        "id": id,
         "test_count": test_q.count(),
         "question_count": all_questions,
-        "correct_rate": f"{round((correct / all_questions) * 100, 2)}%" if all_questions != 0 else "0.0%"
+        "correct_rate": f"{round((correct / all_questions) * 100, 2)}" if all_questions != 0 else "0",
+        "correct_questions": correct
     }
     return jsonify(data)
 # rating 
@@ -237,7 +268,7 @@ def get_rating():
     max_test_count = sorted(data["users"], key=lambda d: d['test_count'], reverse=True)[0]
     max_question_count = sorted(data["users"], key=lambda d: d['question_count'], reverse=True)[0]
 
-    data1 = data.copy()
+    data1 = deepcopy(data)
     data1["users"].remove(max_test_count)
     for i in data1["users"]:
         if i["test_count"] == max_test_count["test_count"]:

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Примеры{% endblock %}
+{% block subtitle %}Выбор сложности{% endblock %}
+{% block content %}
+<div class="container" id="con">
+  <div class="card" style="width: 18rem;">
+    <div class="card-body">
+      <form id="form" method="post" action="{{ url_for('display', ac='get', complexity=0) }}">
+        <h4 style="margin: 0;">Сложность примеров</h4>
+        <ul class="list-group">
+          <li class="list-group-item">
+            <input name="level" class="form-check-input me-1" type="radio" value="0" required>
+            <label class="form-check-label" for="firstRadio">Легкая</label>
+          </li>
+          <li class="list-group-item">
+            <input name="level" class="form-check-input me-1" type="radio" value="1" required>
+            <label class="form-check-label" for="secondRadio">Средняя</label>
+          </li>
+          <li class="list-group-item">
+            <input name="level" class="form-check-input me-1" type="radio" value="2" required>
+            <label class="form-check-label" for="thirdRadio">Сложная</label>
+          </li>
+        </ul>
+        <input type="submit" id="btn" class="btn btn-primary " value="Подтвердить">
+      </form>
+    </div>
+  </div>
+</div>
+<style>
+  #form {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    gap: var(--bs-card-spacer-y) var(--bs-card-spacer-x)
+  }
+
+  #con {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+</style>
+{% endblock %}

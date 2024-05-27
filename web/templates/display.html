@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block subtitle %}Вопросы{% endblock %}
+{% block content %}
+<div class="container" id="con">
+    <div class="card">
+        <div class="card-body">
+            <form id="form" method="post" action="{{ url_for('display', ac='post', complexity=complexity) }}">
+                <h4>Вопросы</h4>
+                {% if complexity != 2%}
+
+                <ol class="list-group list-group-numbered" >
+                    {% for i in ["0", "1", "2", "3", "4"] %}
+                    <li class="list-group-item" >
+                        <!-- <div class="fw"></div> -->
+                        {{ data['questions'][i]["problem"] }}
+                        <input type="text" name="{{ i }}" id="{{ i }}" autocomplete="off" class="form-control" required
+                            style="max-width: 14rem;">
+                    </li>
+                    {% endfor %}
+                </ol>
+
+                {% else %}
+
+                <ol>
+                    {% for i in ["0", "1", "2", "3", "4"] %}
+                    <li>
+                        <p>{{ data['questions'][i]["problem"] }} </p>
+                        <input type="text" name="{{ i }}" id="{{ i }}" required>
+                        <input type="text" name="{{ i ~ 'i' }}" id="{{ i ~ 'i'}}" autocomplete="off" required>
+                    </li>
+                    {% endfor %}
+                </ol>
+
+                {% endif %}
+                <input type="submit" id="btn" class="btn btn-primary " value="Продолжить">
+            </form>
+        </div>
+    </div>
+</div>
+<style>
+    .card {
+        width: 18rem;
+    }
+
+    #form {
+        display: flex;
+        flex-direction: column;
+        justify-content: left;
+        gap: var(--bs-card-spacer-y) var(--bs-card-spacer-x);
+    }
+
+    ol {
+        padding-left: 1rem;
+        width: 16rem;
+        margin-bottom: 0;
+        
+    }
+
+    h4 {
+        margin-bottom: 0;
+    }
+    #con {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+    ::before {
+        font-weight: bold;
+    }
+    .list-group-item {
+        padding-top: var(--bs-list-group-item-padding-y);
+        padding-bottom: var(--bs-list-group-item-padding-x);
+    }
+</style>
+{% endblock %}

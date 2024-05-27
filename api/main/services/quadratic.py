@@ -16,7 +16,8 @@ def generate_quadratic_equation():
             if D < 0:
                 continue
             elif D == 0:
-                answer = ref((-b) / (2*a))
+                # answer = ref((-b) / (2*a))
+                continue
             else:
                 x1: float = (-b + (D**0.5)) / (2*a)
                 x2: float = (-b - (D**0.5)) / (2*a)
@@ -35,7 +36,8 @@ def generate_quadratic_equation():
             if D < 0:
                 continue
             elif D == 0:
-                answer = ref((-b) / (2*a))
+                # answer = ref((-b) / (2*a))
+                continue
             else:
                 x1: float = (-b + (D**0.5)) / (2*a)
                 x2: float = (-b - (D**0.5)) / (2*a)

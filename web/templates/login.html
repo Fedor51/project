@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %} Login {% endblock %}
+{% block link %}{% endblock %}
+{% block subtitle %}Вход в учетную запись{% endblock %}
+{% block content %}
+
+<div class="container" id="con">
+  <div class="card" style="width: 18rem;">
+    <div class="card-body">
+      <div id="con1">
+        <h4 style="margin: 0%;">Вход</h4>
+        <form id="form-data" method="post" action="{{ url_for('login') }}">
+          <div id="input-data" class="input">
+            <input type="text" name="email" placeholder="Email" class="form-control" required>
+            <input type="password" name="password" placeholder="Пароль" class="form-control" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Продолжить</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="width: 18rem; margin-top: 1rem;">
+    <div class="card-body">
+      <div id="con2">
+        <h4 class="card-title" style="margin: 0%;">Нет учетной записи?</h4>
+        <form id="form-signup" action="{{ url_for('signup') }}">
+          <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+
+  #con {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  #con1 {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    gap: var(--bs-card-spacer-y) var(--bs-card-spacer-x);
+  }
+  #con2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    gap: var(--bs-card-spacer-y) var(--bs-card-spacer-x);
+  }
+  #form-data {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    gap: inherit;
+  }
+
+  #input-data {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    gap: inherit;
+  }
+
+  #form-signup {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    gap: inherit;
+  }
+  
+</style>
+{% endblock %}
