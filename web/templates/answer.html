@@ -25,7 +25,22 @@
             </ol>
 
             {% else %}
-            <ol>
+            <ol class="list-group list-group-numbered">
+                {% for i in ["0", "1", "2", "3", "4"] %}
+                <li class="list-group-item">
+                    {{ data["questions"][i]["problem"] }}
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="width: 7rem;">Ваш ответ:</span>
+                        <span class="input-group-text" style="width: 6rem;">{{ answers[loop.index0][0] }}, {{ answers[loop.index0][1] }}</span>
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="width: 7rem;">Ответ:</span>
+                        <span class="input-group-text" style="width: 6rem;">{{ data["questions"][i]["answer"][0] }}, {{  data["questions"][i]["answer"][1] }}</span>
+                    </div>
+                </li>
+                {% endfor %}
+            </ol>
+            <!-- <ol>
                 {% for i in ["0", "1", "2", "3", "4"] %}
                 <li>
                     <p>Вопрос: {{ data["questions"][i]["problem"] }}</p>
@@ -35,7 +50,7 @@
                         data["questions"][i]["answer"][1] }}</p>
                 </li>
                 {% endfor %}
-            </ol>
+            </ol> -->
             {% endif %}
             <h4>Хотите продолжить?</h4>
                 <input type="submit" id="btn" class="btn btn-primary " value="Продолжить">

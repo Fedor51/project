@@ -21,12 +21,14 @@
 
                 {% else %}
 
-                <ol>
+                <ol class="list-group list-group-numbered" >
                     {% for i in ["0", "1", "2", "3", "4"] %}
-                    <li>
-                        <p>{{ data['questions'][i]["problem"] }} </p>
-                        <input type="text" name="{{ i }}" id="{{ i }}" required>
-                        <input type="text" name="{{ i ~ 'i' }}" id="{{ i ~ 'i'}}" autocomplete="off" required>
+                    <li class="list-group-item" >
+                        {{ data['questions'][i]["problem"] }}
+                        <input type="text" name="{{ i }}" id="{{ i }}" autocomplete="off" class="form-control" required
+                            style="max-width: 14rem;">
+                        <input type="text" name="{{  i ~ 'i' }}" id="{{ i ~ 'i' }}" autocomplete="off" class="form-control" required
+                            style="max-width: 14rem;">
                     </li>
                     {% endfor %}
                 </ol>
@@ -38,10 +40,6 @@
     </div>
 </div>
 <style>
-    .card {
-        width: 18rem;
-    }
-
     #form {
         display: flex;
         flex-direction: column;
@@ -62,12 +60,18 @@
     #con {
         display: flex;
         justify-content: center;
-        flex-direction: column;
+        /* flex-direction: column;
         align-items: center;
         position: absolute;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%); */ 
+    }
+    #content {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center
     }
     ::before {
         font-weight: bold;
