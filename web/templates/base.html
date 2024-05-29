@@ -9,23 +9,26 @@
 
 <body>
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container-fluid">
+    <div id="fluid" class="container-fluid">
       <a class="navbar-brand" href="/">MeTan</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
-        aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      {% block links %}
+      <div class="navbar-nav em" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-          <a class="nav-link active" aria-current="page">{% block subtitle %}{% endblock %}</a>
+          <a class="nav-link active" href="/account">Личный кабинет</a>
         </div>
       </div>
+      <div class="navbar-nav em" id="navbarNavAltMarkup1">
+        <div class="navbar-nav">
+          <a class="nav-link active" href="/rating">Рейтинг пользователей</a>
+        </div>
+      </div>
+      <div class="navbar-nav em" id="navbarNavAltMarkup1">
+        <div class="navbar-nav">
+          <a class="nav-link active" href="/about">О нас</a>
+        </div>
+      </div>
+      {% endblock %}
     </div>
-    {% block link %}
-    <span class="navbar-text">
-      <a href="/account">Личный кабинет</a>
-    </span>
-    {% endblock %}
   </nav>
   <hr>
   <div class="content" id="content">
@@ -35,6 +38,15 @@
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
     crossorigin="anonymous"></script>
   <style>
+    .em {
+      margin-right: 1rem;
+    }
+    #fluid {
+      justify-content: left;
+    }
+    .navbar-collapse {
+      flex-grow: 0; 
+    }
     hr {
       margin: 0;
     }
@@ -51,5 +63,4 @@
     }
   </style>
 </body>
-
 </html>

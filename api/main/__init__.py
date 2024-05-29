@@ -1,12 +1,9 @@
-from flask import Flask, jsonify, request, render_template
+from flask import Flask, jsonify, request
 from config import Config
 from main.models import *
 from main.models.db import db
 from main.services import *
 from datetime import datetime
-from pprint import pprint
-from sqlalchemy import desc
-from copy import deepcopy
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -21,12 +18,12 @@ def login():
     user = User.query.filter_by(email=email).first()
 
     if user == None:
-        print("Login went wrong, email is invalid") ; return jsonify("0")
+        return jsonify("0")
     
     if user.password == password:
-        print("Login went successfully") ; return jsonify("1")
+        return jsonify("1")
     
-    print("Login went wrong, password is invalid") ;  return jsonify("0")
+    return jsonify("0")
 
 @app.route("/get/problem/<int:complexity>/<int:count>", methods=["GET"])
 def get_problem(complexity, count):
@@ -38,13 +35,12 @@ def get_problem(complexity, count):
                 {
                 idx: {
                     "problem": pr[0],
-                    "answer": pr[1], # TODO: change answers view(goal: get_problem(answers))
+                    "answer": pr[1],
                     "is_correct": 0,
                     "solutions": 1 if complexity != 2 else 2
                 } for idx, pr in enumerate(problems)
             } 
         }
-    pprint(data)
     return jsonify(data)
 
 @app.route("/get/user_by_email", methods=["POST"])
@@ -100,6 +96,7 @@ def save_test():
 def get_user(id):
     user = User.query.get_or_404(id)
     tests = Test.query.filter_by(user_id=id).all()
+    stats = get_stats(id).json
 
     data = {
         "first_name": user.first_name,
@@ -115,7 +112,12 @@ def get_user(id):
                 "user_id": t.user_id, 
                 "questions": [{"problem": q.problem, "answer": q.answer, "is_correct": q.is_correct} for q in Question.query.filter_by(test_id=t.id).all()]
             } for t in tests
-        ]
+        ],
+        "test_count": stats["test_count"],
+        "question_count": stats["question_count"],
+        "correct_rate": stats["correct_rate"],
+        "correct_questions": stats["correct_questions"],
+        "id": id
     }
     return jsonify(data) 
 
@@ -135,10 +137,10 @@ def get_test(user_id):
     }
     return jsonify(data)
 
+
 @app.route("/get/all_users", methods=["GET"])
 def get_all_users():
     users = User.query.all()
-    print(users)
     data = {
         "users": [
                     { 
@@ -155,7 +157,7 @@ def get_all_users():
                         "user_id": t.user_id, 
                         "questions": [{"problem": q.problem, "answer": q.answer, "is_correct": q.is_correct} for q in Question.query.filter_by(test_id=t.id).all()]
                     } for t in Test.query.filter_by(user_id=user.id)
-                ]
+                ]   
             } for user in users
         ] 
     }
@@ -181,7 +183,7 @@ def add_user():
     data = request.json
     user = User(data["first_name"], data["surname"], data["last_name"], data["email"], data["password"], data["phone"])
 
-    print("Added new user:", data)
+  
 
     db.session.add(user)
     db.session.commit()
@@ -194,8 +196,7 @@ def add_test():
     data = request.json
     test = Test(data["date"], data["user_id"])
 
-    print(data, test)
-
+    
     db.session.add(test)
     db.session.commit()
 
@@ -220,20 +221,18 @@ def edit_user(id):
 @app.route("/drop_user/<int:id>", methods=["GET"])
 def drop_user(id):
     user = User.query.get_or_404(id)
+    tests = Test.query.filter_by(user_id=user.id)
+    for test in tests:
+        questions = Question.query.filter_by(test_id=test.id)
+        for q in questions:
+            db.session.delete(q)
+        
+        db.session.delete(test)
+
     db.session.delete(user)
     db.session.commit()
-
     return "User deleted successfully"
 
-@app.route("/drop_test/<int:id>", methods=["GET"])
-def drop_test(id):
-    test = Test.query.get_or_404(id)
-    db.session.delete(test)
-    db.session.commit()
-
-    return "Test deleted successfully"
-
-# stats
 @app.route("/get/stats/<int:id>", methods=['GET'])
 def get_stats(id):
     user = User.query.get_or_404(id)
@@ -253,39 +252,21 @@ def get_stats(id):
         "test_count": test_q.count(),
         "question_count": all_questions,
         "correct_rate": f"{round((correct / all_questions) * 100, 2)}" if all_questions != 0 else "0",
-        "correct_questions": correct
+        "correct_questions": correct,
+        "id": id
     }
     return jsonify(data)
-# rating 
-@app.route("/get/rating", methods=['GET'])
+
+@app.route("/get/rating", methods=["GET"])
 def get_rating():
-    # qry = session.query(Data).filter(Data.user_id == user_id).order_by(desc(Data.counter).limit(1)    
     data = {
         "users":[
-                get_stats(i+1).json for i in range(User.query.count())
+                get_stats(user.id).json for user in User.query.all()
         ]
     }
-    max_test_count = sorted(data["users"], key=lambda d: d['test_count'], reverse=True)[0]
-    max_question_count = sorted(data["users"], key=lambda d: d['question_count'], reverse=True)[0]
-
-    data1 = deepcopy(data)
-    data1["users"].remove(max_test_count)
-    for i in data1["users"]:
-        if i["test_count"] == max_test_count["test_count"]:
-            max_test_count = "0"
-            break
-
-    data["users"].remove(max_question_count)
-    for i in data["users"]:
-        if i["question_count"] == max_question_count["question_count"]:
-            max_question_count = "0"
-            break
-    d = {   
-        "max_test_count": max_test_count, # "0" if it does not seem to have leader  
-        "max_question_count": max_question_count,
+    s2 = sorted(data["users"], key=lambda d: d['correct_questions'], reverse=True)
+    question_order = [s2[i]["id"] for i in range(0, len(s2))]
+    d = {
+        "users": [get_user(i).json for i in question_order]
     }
-    pprint(d)
     return jsonify(d)
-
-
-# 0^0 = 1  python logic!!!

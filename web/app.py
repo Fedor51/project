@@ -1,15 +1,13 @@
-from flask import Flask, render_template, redirect, url_for, request, jsonify, session
-from pprint import pprint
+from flask import Flask, render_template, redirect, url_for, request, session
 import requests
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]0/'
 
 
-# Главная страница с кнопкой
+
 @app.route("/")
 def index():
-    # del session['email']
     if "email" not in session:
         return render_template("login.html")
     return render_template("index.html")
@@ -36,12 +34,18 @@ def login():
 
 @app.route("/logout")
 def logout():
-    # Удаляем имя пользователя из сессии при выходе
     session.pop("email")
-    return render_template("login.html")
+    return redirect(url_for("index"))
 
+@app.route("/about")
+def about():
+    return render_template("about.html")
 
-# Страница для отображения данных
+@app.route("/rating")
+def rating():
+    resp = requests.get("http://127.0.0.1:5001/get/rating").json()
+    return render_template("rating.html", data=resp['users'])
+
 @app.route("/display/<ac>/<int:complexity>", methods=["GET", "POST"])
 def display(ac, complexity):
     if ac == "get":
@@ -73,6 +77,7 @@ def display(ac, complexity):
         "http://127.0.0.1:5001/get/user_id_by_email", json=session["email"]
     ).json()
     requests.post("http://127.0.0.1:5001/save_test", json=data)
+
     return render_template(
         "answer.html", data=data, answers=answers, complexity=complexity
     )
@@ -103,6 +108,14 @@ def signup():
 
     return render_template("signup.html")
 
+@app.route("/drop_user")
+def drop_user():
+    id = requests.post("http://127.0.0.1:5001/get/user_id_by_email", json=session['email']).json()
+   
+    requests.get(f"http://127.0.0.1:5001/drop_user/{id}")
+    session.pop("email")
+    return redirect(url_for("index"))
+
 
 @app.route("/edit", methods=["GET", "POST"])
 def edit():
@@ -124,7 +137,6 @@ def edit():
     resp = requests.post(
         "http://127.0.0.1:5001/get/user_by_email", json=session["email"]
     ).json()
-    pprint(resp)
     return render_template("edit.html", data=resp)
 
 

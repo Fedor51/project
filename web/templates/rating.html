@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container" id="con">
+	<div class="card">
+		<div class="card-body">
+			<h4 class="card-title">Рейтинг пользователей по количеству правильно решенных вопросов</h4>
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th scope="col">#</th>
+						<th scope="col">ФИО</th>
+						<th class="table-light" scope="col">Количество правильно решенных вопросов</th>
+						<th class="table-light" scope="col">Процент правильно решенных вопросов</th>
+						<th scope="col">Количество тестов</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for user in data %}
+					<tr>
+						<th scope="row">{{ loop.index }}</th>
+						<td>{{ user["first_name"] }} {{ user['surname'] }} {{ user['last_name'] }}</td>
+						<td class="table-light">{{ user["correct_questions"] }}</td>
+						<td class="table-light">{{ user["correct_rate"] }}%</td>
+						<td>{{ user["test_count"] }}</td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+<style>
+	#con {
+    display: flex; 
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 4rem 
+  }
+	.card-title {
+		margin-bottom: 1rem;
+	}
+	.table {
+		margin-bottom: 0;
+	}
+</style>
+{% endblock %}

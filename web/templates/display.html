@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% block subtitle %}Вопросы{% endblock %}
 {% block content %}
 <div class="container" id="con">
     <div class="card">
@@ -8,9 +7,9 @@
                 <h4>Вопросы</h4>
                 {% if complexity != 2%}
 
-                <ol class="list-group list-group-numbered" >
+                <ol class="list-group list-group-numbered">
                     {% for i in ["0", "1", "2", "3", "4"] %}
-                    <li class="list-group-item" >
+                    <li class="list-group-item">
                         <!-- <div class="fw"></div> -->
                         {{ data['questions'][i]["problem"] }}
                         <input type="text" name="{{ i }}" id="{{ i }}" autocomplete="off" class="form-control" required
@@ -21,14 +20,14 @@
 
                 {% else %}
 
-                <ol class="list-group list-group-numbered" >
+                <ol class="list-group list-group-numbered">
                     {% for i in ["0", "1", "2", "3", "4"] %}
-                    <li class="list-group-item" >
+                    <li class="list-group-item">
                         {{ data['questions'][i]["problem"] }}
-                        <input type="text" name="{{ i }}" id="{{ i }}" autocomplete="off" class="form-control" required
+                        <input style="margin-bottom: 0.5rem;" type="text" name="{{ i }}" id="{{ i }}" autocomplete="off" class="form-control" required
                             style="max-width: 14rem;">
-                        <input type="text" name="{{  i ~ 'i' }}" id="{{ i ~ 'i' }}" autocomplete="off" class="form-control" required
-                            style="max-width: 14rem;">
+                        <input type="text" name="{{  i ~ 'i' }}" id="{{ i ~ 'i' }}" autocomplete="off"
+                            class="form-control" required style="max-width: 14rem;">
                     </li>
                     {% endfor %}
                 </ol>
@@ -51,31 +50,33 @@
         padding-left: 1rem;
         width: 16rem;
         margin-bottom: 0;
-        
+
     }
 
     h4 {
         margin-bottom: 0;
     }
+
     #con {
         display: flex;
         justify-content: center;
-        /* flex-direction: column;
+        flex-direction: column;
         align-items: center;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%); */ 
+        margin-top: 4rem;
+
     }
+
     #content {
         display: flex;
         justify-content: center;
         flex-direction: column;
         align-items: center
     }
+
     ::before {
         font-weight: bold;
     }
+
     .list-group-item {
         padding-top: var(--bs-list-group-item-padding-y);
         padding-bottom: var(--bs-list-group-item-padding-x);

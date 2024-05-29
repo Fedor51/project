@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container" id="con">
+	<div class="card" style="width: 18rem;">
+		<div class="card-body">
+			<h4 class="card-title" style="margin-bottom: 0">Информация</h4>
+			<p class="card-text" style="margin-bottom: 0">Все вопросы делятся на 3 уровня сложности:</p>
+			<ol>
+				<li>Легкий уровень </li>
+				<ul style="list-style-type: disc;">
+					<li>Включает в себя арифметичесткие вопросы, то есть сложение, вычитание, умножение и деление.</li>
+				</ul>
+				<li>Средний уровень </li>
+				<ul style="list-style-type: disc;">
+					<li>Вопросы по начальным знаниям алгебры: примеры с множеством действий, работа со степенями, линейные
+						уравнения, квадватные корни.</li>
+				</ul>
+				<li>Сложный уровень </li>
+				<ul style="list-style-type: disc;">
+					<li style="padding-bottom: 0;">Алгебра: квадватные уравнения с двумя решениями и уравнения с произведением,
+						равным нулю (нули функции).
+					</li>
+				</ul>
+			</ol>
+			<h4 class="card-title" style="margin-bottom: 0;">Краткое руководство</h4>
+
+			<ul>
+				<li>Ответ нужно вводить только числами.</li>
+				<li>Как знак десятичной дроби использовать точку (например -0.8).</li>
+				<li>Ответы округлять до сотых и записывать в десятичной дроби.</li>
+				<li style="padding-bottom: 0;">При сложном уровне нужно ввести два ответа.</li>
+			</ul>
+
+
+			<a href="/" class="btn btn-primary">Начать решать</a>
+		</div>
+	</div>
+</div>
+<style>
+	#con {
+		display: flex;
+		justify-content: center;
+		flex-direction: column;
+		align-items: center;
+		margin-top: 4rem;
+	}
+
+	.card-body {
+		display: flex;
+		flex-direction: column;
+		justify-content: left;
+		gap: var(--bs-card-spacer-y) var(--bs-card-spacer-x);
+	}
+
+	ol,ul {
+		padding-left: 1rem;
+		margin: 0;
+		
+	}
+
+	li {
+		padding-bottom: 1rem;
+	}
+
+	::marker {
+		font-weight: bold;
+
+	}
+</style>
+{% endblock %}

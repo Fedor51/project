@@ -1,38 +1,78 @@
 {% extends 'base.html' %}
 {% block title %} Edit {% endblock %}
-{% block link %}{% endblock %}
-{% block subtitle %}Изменение парамеров учетной записи{% endblock %}
 {% block content %}
-<form id="form" method="post" action="{{ url_for('edit') }}">
+<div class="container" id="con">
 
-    <label for="first_name">Имя:</label>
-    <input type="text" name="first_name" value="{{ data['first_name'] }}" required><br>
+  <div class="card" style="width: 18rem;">
+    <div class="card-body">
+      <h4 class="card-title" style="margin: 0%;">Изменение данных пользователя</h4>
+      <form id="form" method="post" action="{{ url_for('edit') }}">
 
-    <label for="surname">Фамилия:</label>
-    <input type="text" name="surname" value="{{ data['surname'] }}" required><br>
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="text" class="form-control" value="{{ data['first_name'] }}" name="first_name">
+            <label>Имя</label>
+          </div>
+        </div>
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="text" class="form-control" value="{{ data['surname'] }}" name="surname">
+            <label>Фамилия</label>
+          </div>
+        </div>
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="text" class="form-control" value="{{ data['last_name'] }}" name="last_name">
+            <label>Отчество</label>
+          </div>
+        </div>
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="email" class="form-control" value="{{ data['email'] }}" name="email">
+            <label>Email</label>
+          </div>
+        </div>
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="tel" class="form-control" value="{{ data['phone'] }}" name="phone">
+            <label>Номер телефона</label>
+          </div>
+        </div>
+        <div class="col-md">
+          <div class="form-floating">
+            <input type="password" class="form-control" value="{{ data['password'] }}" name="password">
+            <label>Пароль</label>
+          </div>
+        </div>
 
-    <label for="last_name">Отчество:</label>
-    <input type="text" name="last_name" value="{{ data['last_name'] }}" required><br>
-    
-    <div class="input-group mb-3" style="margin-top: 5px;">
-        <span class="input-group-text" id="inputGroup-sizing-default">Email: </span>
-        <input type="email" name="email" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default" value="{{ data['email'] }}">
+        <button type="submit" class="btn btn-danger">Изменить</button>
+      </form>
     </div>
-
-    <label for="phone">Номер телефона:</label>
-    <input type="tel" name="phone" value="{{ data['phone'] }}"  required><br>
-
-    <label for="password">Пароль:</label>
-    <input type="password" name="password" value="{{ data['password'] }}" required><br>
-
-    <button type="submit" class="btn btn-danger">Изменить</button>
-</form>
+  </div>
+</div>
 
 <style>
-#form label, input{
-  margin-top: 3px;
-  margin-bottom: 3px;
-}
+  #con {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 4rem;
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    gap: var(--bs-card-spacer-y) var(--bs-card-spacer-x);
+  }
+
+  #form {
+    display: inherit;
+    flex-direction: inherit;
+    justify-content: inherit;
+    gap: inherit;
+  }
 </style>
 
 {% endblock %}
