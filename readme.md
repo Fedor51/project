@@ -20,13 +20,13 @@ _Стремление к упрощению вычислений привело 
 * _mathgenerator_
   
 ## Как развернуть проект 
-* Windows
+### Windows
 ```
 git clone https://github.com/Fedor51/project
 venv\Scripts\activate.bat
 pip install -r requirements.txt 
 ```
-* Unix
+### Unix
 ```
 git clone https://github.com/Fedor51/project
 source venv\bin\activate
@@ -34,6 +34,7 @@ pip install -r requirements.txt
 ```
 
 ## Запуск
+### Windows
 * api:
 ```
 cd api
@@ -43,5 +44,16 @@ run.py
 ```
 cd web
 app.py
+```
+### Unix
+* api:
+```
+cd api
+python run.py
+```
+* web
+```
+cd web
+python app.py
 ```
 Две части проекта для корреткной работы должны работать одновременно. 
